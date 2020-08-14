@@ -1,10 +1,30 @@
 {% extends 'base.html' %}
-
+{% load widget_tweaks %}
 {% block title %}
     Password Manager - Register
 {% endblock %}
 
 {% block content %}
-    <h1>Register Page</h1>
+
+    <form action="" method="post" enctype="multipart/form-data" class="container">
+    <h2 class="text-success my-3 text-center">REGISTER</h2>
+        {% csrf_token %}
+        {% for each_field in form %}
+            <div class="form-group">
+                {{ each_field.label }}
+                {{ each_field }}
+            </div>
+       {% endfor %}
+
+        {% if form.errors %}
+        <h3 class="text-danger my-3 text-center">You have errors in form, please correct them and try again!</h3>
+          <ul>
+            {% for key,value in form.errors.items %}
+              <li class="alert alert-danger" role="alert">{{ value|escape }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Submit">
+    </form>
 {% endblock %}
 

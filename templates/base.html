@@ -7,9 +7,10 @@
         {% block title %}{% endblock %}
     </title>
     <link rel="stylesheet" href={% static 'css/bootstrap.min.css' %}>
+    <link rel="stylesheet" href={% static 'css/mainStyles.css' %}>
 </head>
 <body>
-
+{% include 'partials/header.html' %}
 {% block content %}
 
 {% endblock %}
