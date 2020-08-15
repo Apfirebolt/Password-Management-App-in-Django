@@ -19,7 +19,7 @@ class PasswordHint(models.Model):
     real_password = models.CharField("Actual Password", max_length=100)
     created_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     password_hint_one = models.TextField("First Hint")
-    password_hint_two = models.TextField("Second Hint")
+    password_hint_two = models.TextField("Second Hint", null=True, blank=True)
     hint_image = models.ImageField(upload_to='hint_image')
 
     def __str__(self):

@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">Navbar</a>
+  <p class="navbar-brand">Password Manager</p>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -10,7 +10,31 @@
 
         <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
       </li>
-      {% if not user.is_authenticated %}
+      {% if request.user.is_authenticated %}
+          <p class="text-success m-2">
+            Hello, {{ request.user.username }}
+          </p>
+          <li class="nav-item">
+            <a class="nav-link" href={% url 'accounts:home' %}>Dashboard</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" href={% url 'accounts:logout' %}>Log out</a>
+          </li>
+
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Manage Passwords
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+              <a class="dropdown-item" href={% url 'passwords:create_category' %}>Create Category</a>
+              <a class="dropdown-item" href={% url 'passwords:create_password' %}>Create Password</a>
+              <div class="dropdown-divider"></div>
+              <a class="dropdown-item" href={% url 'passwords:home' %}>View All Passwords</a>
+            </div>
+          </li>
+
+          {% else %}
           <li class="nav-item">
             <a class="nav-link" href={% url 'accounts:register' %}>Register</a>
           </li>
@@ -19,17 +43,7 @@
           </li>
       {% endif %}
 
-      <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Dropdown
-        </a>
-        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Action</a>
-          <a class="dropdown-item" href="#">Another action</a>
-          <div class="dropdown-divider"></div>
-          <a class="dropdown-item" href="#">Something else here</a>
-        </div>
-      </li>
+
     </ul>
   </div>
 </nav>

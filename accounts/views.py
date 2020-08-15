@@ -3,11 +3,12 @@ from django.views.generic import View, TemplateView
 from . forms import CustomUserForm
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import reverse
 
 
-class AccountsHome(TemplateView):
+class AccountsHome(LoginRequiredMixin, TemplateView):
     template_name = 'accounts/dashboard.html'
 
 
@@ -34,12 +35,20 @@ def login_user(request):
 
         user = authenticate(username=userEmail, password=userPassword)
         if user is not None:
+            login(request, user)
             messages.add_message(request, messages.INFO,
                                  'You have successfully logged in! Please continue to your dashboard!')
-            return HttpResponseRedirect('/')
+            return HttpResponseRedirect(reverse('accounts:home'))
         else:
             messages.add_message(request, messages.ERROR,
                                  'Invalid credentials provided, failed to login!')
             return HttpResponseRedirect(reverse('accounts:login'))
     else:
         return render(request, 'accounts/login.html', {})
+
+
+def logout_view(request):
+    logout(request)
+    messages.add_message(request, messages.SUCCESS,
+                         'Successfully logged out, Please login to continue!')
+    return HttpResponseRedirect(reverse('accounts:login'))
