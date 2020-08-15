@@ -44,6 +44,10 @@ class PasswordHintForm(forms.ModelForm):
         self.user = user
         self.fields['linked_category'].queryset = PasswordCategory.objects.filter(created_by=user)
 
+    error_messages = {
+        'file_size_exceeded': "Please upload an image less than 1 MB in size.",
+    }
+
     linked_category = forms.ModelChoiceField(queryset=None,label="Please Select Category",
                                         widget=forms.Select(attrs={'class': 'form-control'}))
     password_belongs_to = forms.CharField(label=("Please Enter Account To Which This Password Belongs To"),
@@ -57,6 +61,15 @@ class PasswordHintForm(forms.ModelForm):
     hint_image = forms.FileField(label=("Please Upload Your Profile Image"),
                                     widget=forms.FileInput(attrs={'class': 'form-control-file'}),
                                     validators=[FileExtensionValidator(['png', 'jpg'])])
+
+    def clean_hint_image(self):
+        hint_image = self.cleaned_data.get('hint_image')
+        if hint_image.size > 1048576:
+            raise forms.ValidationError(
+                self.error_messages['file_size_exceeded'],
+                code='file_size_exceeded'
+            )
+        return hint_image
 
     class Meta:
         model = PasswordHint

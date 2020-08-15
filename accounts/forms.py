@@ -1,5 +1,6 @@
 from django import forms
 from . models import CustomUser
+from cryptography.fernet import Fernet
 from django.core.validators import FileExtensionValidator
 import re
 
@@ -48,7 +49,7 @@ class CustomUserForm(forms.ModelForm):
                 code='username_required'
             )
 
-        pattern = '^[a-zA-Z0-9,.!?]*$'
+        pattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])'
         result = re.match(pattern, username)
 
         if username and not result:
@@ -80,6 +81,8 @@ class CustomUserForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(CustomUserForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
+        user.user_secret_key = Fernet.generate_key() #this is your cryptography "secret key"
+
         if commit:
             user.save()
         return user

@@ -1,5 +1,6 @@
 from django.db import models
 from password_manager.settings import AUTH_USER_MODEL
+from cryptography.fernet import Fernet
 
 
 class PasswordCategory(models.Model):
@@ -24,6 +25,12 @@ class PasswordHint(models.Model):
 
     def __str__(self):
         return str(self.password_belongs_to) + '-' + str(self.created_by.username)
+
+    def get_real_password(self):
+        key = self.created_by.user_secret_key
+        cipher_suite = Fernet(key.encode())
+        real_password = cipher_suite.decrypt(self.real_password.encode())
+        return real_password.decode('utf-8')
 
     class Meta:
         verbose_name_plural = "Password Hints"
