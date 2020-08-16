@@ -6,6 +6,7 @@ from django.http import HttpResponseRedirect
 from cryptography.fernet import Fernet
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
+from django.shortcuts import get_object_or_404
 
 
 @login_required
@@ -74,3 +75,11 @@ def create_password(request):
 
         form = PasswordHintForm(request.user)
     return render(request, 'passwords/create_password.html', {'form': form})
+
+
+@login_required
+def detail_password(request, pk):
+    passwordDetailObj = get_object_or_404(PasswordHint, id=pk)
+    return render(request, 'passwords/detail_password.html', {
+        'passwordObj': passwordDetailObj
+    })
