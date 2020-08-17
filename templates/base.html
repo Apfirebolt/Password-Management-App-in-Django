@@ -11,9 +11,13 @@
 </head>
 <body>
 {% include 'partials/header.html' %}
+<div class="real_password">
+    <p>Real Password Container</p>
+</div>
 {% block content %}
 
 {% endblock %}
+{% include 'partials/footer.html' %}
 <script src={% static 'js/jquery.js' %}></script>
 <script src={% static 'js/bootstrap.min.js' %}></script>
 <script src={% static 'js/mainJS.js' %}></script>

@@ -53,7 +53,7 @@ class PasswordHintForm(forms.ModelForm):
     password_belongs_to = forms.CharField(label=("Please Enter Account To Which This Password Belongs To"),
                                widget=forms.TextInput(attrs={'class': 'form-control'}))
     real_password = forms.CharField(label=("Please Enter Your Password"),
-                             widget=forms.TextInput(attrs={'class': 'form-control'}))
+                             widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     password_hint_one = forms.CharField(label=("Please Enter Your First Hint"),
                                     widget=forms.TextInput(attrs={'class': 'form-control'}))
     password_hint_two = forms.CharField(label=("Please Enter Your Second Hint"),

@@ -94,3 +94,21 @@ input[type="color"]:focus,
     flex-direction: column;
     align-items: center;
 }
+
+.real_password {
+    width: 50%;
+    height: 300px;
+    position: fixed;
+    right: 0;
+    left: 0;
+    margin-right: auto;
+    margin-left: auto;
+    background-color: #1c7430;
+    color: #FFF;
+    font-weight: 600;
+    font-size: 1.5rem;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
