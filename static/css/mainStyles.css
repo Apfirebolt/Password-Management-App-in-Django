@@ -161,4 +161,9 @@ a.list-group-item:hover {
     }
 }
 
+.alert-error {
+    color: #FFF;
+    background-color: indianred;
+}
+
 

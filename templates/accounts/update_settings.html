@@ -14,16 +14,21 @@
     <form action="" method="post" enctype="multipart/form-data" class="container">
     <h2 class="text-success my-3 text-center">UPDATE SETTINGS</h2>
         {% csrf_token %}
+        {% for each_field in form %}
+            <div class="form-group">
+                <label for={{ each_field.name }}>{{ each_field.label }}</label>
+                {{ each_field }}
+            </div>
+       {% endfor %}
 
-        <div class="form-group">
-            <label for="email">Please Enter Your Email</label>
-            <input type="email" class="form-control" name="email" id="email" value={{ user_data.email }} />
-        </div>
-
-        <div class="form-group">
-            <label for="username">Please Enter Your Username</label>
-            <input type="text" class="form-control" name="username" id="username" value={{ user_data.username }} />
-        </div>
+        {% if form.errors %}
+        <h3 class="text-danger my-3 text-center">You have errors in form, please correct them and try again!</h3>
+          <ul>
+            {% for key,value in form.errors.items %}
+              <li class="alert alert-danger" role="alert">{{ value|escape }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
 
         <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Update Settings">
     </form>

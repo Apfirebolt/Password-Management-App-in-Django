@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import View, TemplateView
-from . forms import CustomUserForm
+from . forms import CustomUserForm, UpdateSettingsForm, UpdatePasswordForm,UpdateProfileImageForm
 from . models import CustomUser
 from django.http import HttpResponseRedirect, HttpResponse
 from django.contrib import messages
@@ -23,6 +23,7 @@ def create_user(request):
                                  'You have successfully registered! Please continue to your dashboard!')
             return HttpResponseRedirect('/')
         else:
+            print('Not valid here', form.errors)
             pass
             # if a GET (or any other method) we'll create a blank form
     else:
@@ -59,55 +60,78 @@ def logout_view(request):
 @login_required
 def update_settings(request):
     if request.method == 'POST':
-        formData = request.POST
-        userObj = CustomUser.objects.get(id=request.user.id)
-        userObj.email = formData['email']
-        userObj.username = formData['username']
-        userObj.save()
-        messages.add_message(request, messages.SUCCESS,
-                             'You have successfully updated your email/username settings.')
-        return HttpResponseRedirect(reverse('accounts:home'))
+        try:
+            form = UpdateSettingsForm(request.POST)
+            if form.is_valid():
+                print('Validated data ', form.cleaned_data)
+                formData = form.cleaned_data
+                userObj = CustomUser.objects.get(id=request.user.id)
+                userObj.email = formData['email']
+                userObj.username = formData['username']
+                userObj.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     'Your Username and Email settings were successfully updated!')
+                return HttpResponseRedirect(reverse('accounts:home'))
+            else:
+                pass
+        except Exception as err:
+            print(err)
+            return HttpResponse('Some error occurred..')
     else:
         userObj = CustomUser.objects.get(id=request.user.id)
-        return render(request, 'accounts/update_settings.html', {
-            'user_data': userObj
-        })
+        initialData = {
+            'email': userObj.email,
+            'username': userObj.username
+        }
+        form = UpdateSettingsForm(initial=initialData)
+    return render(request, 'accounts/update_settings.html', {
+        'form': form,
+    })
 
 
 @login_required
 def update_profile_image(request):
     if request.method == 'POST':
-        profileImage = request.FILES['profile_image']
-        userObj = CustomUser.objects.get(id=request.user.id)
-        userObj.profile_image = profileImage
-        userObj.save()
-        messages.add_message(request, messages.SUCCESS,
-                             'Your Profile Image was successfully updated!')
-        return HttpResponseRedirect(reverse('accounts:home'))
+        try:
+            form = UpdateProfileImageForm(request.POST, request.FILES)
+            if form.is_valid():
+                formData = form.cleaned_data
+                userObj = CustomUser.objects.get(id=request.user.id)
+                userObj.profile_image = formData['profile_image']
+                userObj.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     'Your Profile Image was successfully updated!')
+                return HttpResponseRedirect(reverse('accounts:home'))
+            else:
+                pass
+        except Exception as err:
+            print(err)
+            return HttpResponse('Some error occurred..')
     else:
-        userObj = CustomUser.objects.get(id=request.user.id)
-        return render(request, 'accounts/update_profile_image.html', {
-            'user_data': userObj
-        })
+        form = UpdateProfileImageForm()
+    return render(request, 'accounts/update_profile_image.html', {
+        'form': form,
+    })
 
 
 def update_password(request):
     if request.method == 'POST':
         try:
-            formData = request.POST
-            old_password = formData['old_password']
-            new_password = formData['new_password']
-            userObj = CustomUser.objects.get(id=request.user.id)
-
-            user = authenticate(username=userObj.email, password=old_password)
-            if user is not None:
-                userObj.set_password(new_password)
+            form = UpdatePasswordForm(request.user, request.POST)
+            if form.is_valid():
+                formData = form.cleaned_data
+                userObj = CustomUser.objects.get(id=request.user.id)
+                userObj.set_password(formData['new_password'])
                 userObj.save()
                 messages.add_message(request, messages.SUCCESS,
-                                     '%s , Your Password was successfully updated!' % userObj.username)
+                                     'Your Profile Password was successfully updated!')
                 return HttpResponseRedirect(reverse('accounts:home'))
+            else:
+                pass
         except Exception as err:
             print(err)
-            return HttpResponse('Some error')
     else:
-        return render(request, 'accounts/update_password.html', {})
+        form = UpdatePasswordForm(request.user)
+    return render(request, 'accounts/update_password.html', {
+        'form': form,
+    })
