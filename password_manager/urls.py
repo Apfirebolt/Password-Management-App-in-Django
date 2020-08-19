@@ -12,8 +12,5 @@ urlpatterns = [
     path('passwords/', include(('passwords.urls', 'passwords'), namespace='passwords')),
 ]
 
-urlpatterns += static(settings.MEDIA_URL, dcument_root=settings.MEDIA_ROOT)
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-handler400 = bad_request
-handler403 = no_permissions
-handler404 = not_found

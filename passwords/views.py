@@ -2,11 +2,12 @@ from django.shortcuts import render
 from . forms import PasswordCategoryForm, PasswordHintForm
 from . models import PasswordCategory, PasswordHint
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
 from cryptography.fernet import Fernet
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import PermissionDenied
 
 
 @login_required
@@ -80,6 +81,8 @@ def create_password(request):
 @login_required
 def detail_password(request, pk):
     passwordDetailObj = get_object_or_404(PasswordHint, id=pk)
+    if passwordDetailObj.created_by_id != request.user.id:
+        raise PermissionDenied()
     return render(request, 'passwords/detail_password.html', {
         'passwordObj': passwordDetailObj
     })
@@ -90,6 +93,8 @@ def delete_password(request, pk):
     if request.method == 'POST':
         try:
             password_hint_obj = PasswordHint.objects.get(id=pk)
+            if password_hint_obj.created_by_id != request.user.id:
+                raise PermissionDenied()
             password_hint_obj.delete()
             messages.add_message(request, messages.SUCCESS,
                                  'Password hint was successfully updated!')
@@ -126,6 +131,8 @@ def update_hints(request, pk):
             return HttpResponse('Some error occurred')
     else:
         passwordHintObj = PasswordHint.objects.get(id=pk)
+        if passwordHintObj.created_by_id != request.user.id:
+            raise PermissionDenied()
         return render(request, 'passwords/update_hints.html', {
             'password_obj': passwordHintObj
         })
@@ -161,6 +168,8 @@ def update_password(request, pk):
             pass
     else:
         passwordHintObj = PasswordHint.objects.get(id=pk)
+        if passwordHintObj.created_by_id != request.user.id:
+            raise PermissionDenied()
         initialData = {
             'password_belongs_to': passwordHintObj.password_belongs_to,
             'linked_category': passwordHintObj.linked_category,
