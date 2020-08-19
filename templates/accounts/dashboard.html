@@ -5,9 +5,15 @@
 {% endblock %}
 
 {% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
     <div class="container">
-        <h3 class="text-primary my-3 text-center">DASHBOARD</h3>
 
+        <h3 class="text-primary my-3 text-center">DASHBOARD</h3>
+        <img class="rounded float-left" src={{ request.user.profile_image }}>
         <p class="header_para">
             Hey <span class="lead m-1">{{ request.user.username }}</span>, This is your secret key <span class="highlight">{{ request.user.user_secret_key }}</span>
         </p>
@@ -18,8 +24,8 @@
         </p>
 
         <ul class="list-group">
-            <li class="list-group-item">CREATE A CATEGORY</li>
-            <li class="list-group-item">CREATE A PASSWORD</li>
+            <a class="list-group-item" href={% url 'passwords:create_category' %}>Create Category</a>
+            <a class="list-group-item" href={% url 'passwords:create_password' %}>Create Password</a>
         </ul>
     </div>
 {% endblock %}

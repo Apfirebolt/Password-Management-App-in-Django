@@ -92,7 +92,7 @@ def delete_password(request, pk):
             password_hint_obj = PasswordHint.objects.get(id=pk)
             password_hint_obj.delete()
             messages.add_message(request, messages.SUCCESS,
-                                 'Password hint was successfully deleted!')
+                                 'Password hint was successfully updated!')
             return HttpResponseRedirect(reverse('passwords:home'))
         except Exception as err:
             print(err)
@@ -114,7 +114,6 @@ def update_hints(request, pk):
 
             password_hint_obj.password_hint_one = first_hint
             password_hint_obj.password_hint_two = second_hint
-            print('Request Files : ', request.FILES)
             if request.FILES.get('hint_image_changed'):
                 password_hint_obj.hint_image = request.FILES.get('hint_image_changed')
             password_hint_obj.save()
@@ -130,7 +129,6 @@ def update_hints(request, pk):
         return render(request, 'passwords/update_hints.html', {
             'password_obj': passwordHintObj
         })
-
 
 
 @login_required

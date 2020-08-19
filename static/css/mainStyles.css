@@ -112,3 +112,47 @@ input[type="color"]:focus,
     justify-content: center;
     z-index: 1000;
 }
+
+a.list-group-item {
+    text-decoration: none;
+    box-shadow: 1px 2px 2px #FFF;
+    transition: all 0.4s ease-out;
+}
+
+a.list-group-item:hover {
+    background-color: #0c5460;
+    color: #FFF;
+    transition: all 0.4s ease-out;
+}
+
+.reveal_password_click {
+    cursor: pointer;
+    font-size: 1.5rem;
+    color: #0c5460;
+    font-weight: 500;
+    transition: all 0.4s ease-out;
+}
+
+.reveal_password_click:hover {
+    padding-bottom: 0.5rem;
+    color: orangered;
+    border-bottom: 1px solid black;
+    transition: all 0.4s ease-out;
+}
+
+.real_password {
+    margin: 2rem;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+@media screen and (min-width: 1200px) {
+  .real_password {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    }
+}
+
+

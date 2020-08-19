@@ -49,7 +49,7 @@ class CustomUserForm(forms.ModelForm):
                 code='username_required'
             )
 
-        pattern = '(?=.*\d)(?=.*[a-z])(?=.*[A-Z])'
+        pattern = '^[^0-9][a-zA-Z0-9_ ]+$'
         result = re.match(pattern, username)
 
         if username and not result:
@@ -67,7 +67,7 @@ class CustomUserForm(forms.ModelForm):
                 self.error_messages['password_length'],
                 code='password_length'
             )
-        pattern = '[A-Za-z0-9@#$%^&+=]'
+        pattern = '[A-Za-z0-9@#$%^&+=]+'
         result = re.fullmatch(pattern, password)
 
         if len(password) > 8 and not result:
@@ -81,7 +81,7 @@ class CustomUserForm(forms.ModelForm):
     def save(self, commit=True):
         user = super(CustomUserForm, self).save(commit=False)
         user.set_password(self.cleaned_data["password1"])
-        user.user_secret_key = Fernet.generate_key() #this is your cryptography "secret key"
+        user.user_secret_key = Fernet.generate_key().decode('utf-8') #this is your cryptography "secret key"
 
         if commit:
             user.save()
