@@ -29,8 +29,9 @@
             <div class="dropdown-menu" aria-labelledby="navbarDropdown">
               <a class="dropdown-item" href={% url 'passwords:create_category' %}>Create Category</a>
               <a class="dropdown-item" href={% url 'passwords:create_password' %}>Create Password</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href={% url 'passwords:home' %}>View All Passwords</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href={% url 'passwords:home' %}>View All Passwords</a>
+                <a class="dropdown-item" href={% url 'passwords:generated_passwords' %}>Generated Passwords</a>
             </div>
           </li>
 
@@ -42,8 +43,6 @@
             <a class="nav-link" href={% url 'accounts:login' %}>Login</a>
           </li>
       {% endif %}
-
-
     </ul>
   </div>
 </nav>

@@ -15,8 +15,6 @@
     <h2 class="text-success my-3 text-center">UPDATE PASSWORD HINTS</h2>
         {% csrf_token %}
 
-        {{ password_obj.password_hint_two }}
-
         <div class="form-group">
             <label for="first_password_hint">First Password Hint</label>
             <input type="text" value={{ password_obj.password_hint_one }} class="form-control" name="first_password_hint" id="first_password_hint" />

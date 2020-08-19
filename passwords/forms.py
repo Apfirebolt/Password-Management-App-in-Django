@@ -1,5 +1,5 @@
 from django import forms
-from . models import PasswordCategory, PasswordHint, FileEncrypt
+from . models import PasswordCategory, PasswordHint, FileEncrypt, GeneratedPassword
 from django.core.validators import FileExtensionValidator
 
 
@@ -75,6 +75,25 @@ class PasswordHintForm(forms.ModelForm):
         model = PasswordHint
         fields = ('linked_category', 'password_belongs_to', 'real_password', 'password_hint_one',
                   'password_hint_two', 'hint_image',)
+
+
+class GeneratedPasswordForm(forms.ModelForm):
+    PASSWORD_SECURITY_CHOICES = [
+        ('Low', 'Low'),
+        ('Medium', 'Medium'),
+        ('High', 'High'),
+    ]
+
+    password_belongs_to = forms.CharField(label=("Please Enter Account To Which This Password Belongs To"),
+                               widget=forms.TextInput(attrs={'class': 'form-control'}))
+    security_level = forms.ChoiceField(choices=PASSWORD_SECURITY_CHOICES, label=("Please Select the Security Level For Generated Password"),
+                                widget=forms.Select(attrs={'class': 'form-control'}))
+    password_description = forms.CharField(required=False, label=("Please Enter Your Password Description"),
+                                        widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+
+    class Meta:
+        model = GeneratedPassword
+        fields = ('password_belongs_to', 'password_description', 'security_level',)
 
 
 

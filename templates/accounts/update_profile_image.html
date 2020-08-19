@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Password Manager - Update Profile Image
+{% endblock %}
+
+{% block content %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+
+    <form action="" method="post" enctype="multipart/form-data" class="container">
+    <h2 class="text-success my-3 text-center">UPDATE PROFILE IMAGE</h2>
+        {% csrf_token %}
+        <img height="450" width="500" class="img-rounded" src={{ user_data.profile_image.url }}>
+        <div class="form-group">
+            <label for="email">Please Upload Your Profile Image</label>
+            <input type="file" class="form-control-file" name="profile_image" id="profile_image" />
+        </div>
+
+        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Update Image">
+    </form>
+{% endblock %}
+

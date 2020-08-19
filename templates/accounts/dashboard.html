@@ -13,19 +13,40 @@
     <div class="container">
 
         <h3 class="text-primary my-3 text-center">DASHBOARD</h3>
-        <img class="rounded float-left" src={{ request.user.profile_image }}>
-        <p class="header_para">
-            Hey <span class="lead m-1">{{ request.user.username }}</span>, This is your secret key <span class="highlight">{{ request.user.user_secret_key }}</span>
-        </p>
+        <div class="container d-lg-flex d-sm-block my-3">
+            {% if not request.user.profile_image %}
+            <p>
+                It seems you haven't uploaded your profile image, we suggest you to upload it now.
+            </p>
+            {% else %}
+                <img height="300" width="300" class="rounded m-2" src={{ request.user.profile_image.url }}>
+            {% endif %}
 
-        <p>
-            This would be used to perform all
-            your password and file encryption, please do not share this with others.
-        </p>
+            <div class="container_fluid text-center">
+                 <p class="header_para">
+                Hey <span class="lead m-1">{{ request.user.username }}</span>, This is your secret key
+                </p>
+                <p>
+                    <span class="highlight">{{ request.user.user_secret_key }}</span>
+                </p>
+                <p>
+                    This would be used to perform all
+                    your password and file encryption, please do not share this with others.
+                </p>
+
+                <div class="container_fluid my-3">
+                    <p class="text-success my-3">You can update your account settings from here !</p>
+                    <a class="btn btn-primary" href={% url 'accounts:update_profile_image' %}>Update Profile Image</a>
+                    <a class="btn btn-primary" href={% url 'accounts:update_settings' %}>Update Username/Email</a>
+                    <a class="btn btn-primary" href={% url 'accounts:update_password' %}>Update Password</a>
+                </div>
+            </div>
+        </div>
 
         <ul class="list-group">
             <a class="list-group-item" href={% url 'passwords:create_category' %}>Create Category</a>
             <a class="list-group-item" href={% url 'passwords:create_password' %}>Create Password</a>
+            <a class="list-group-item" href={% url 'passwords:create_generated_password' %}>Generate Password</a>
         </ul>
     </div>
 {% endblock %}

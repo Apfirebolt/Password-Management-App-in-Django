@@ -1,13 +1,14 @@
 from django.shortcuts import render
-from . forms import PasswordCategoryForm, PasswordHintForm
-from . models import PasswordCategory, PasswordHint
+from . forms import PasswordCategoryForm, PasswordHintForm, GeneratedPasswordForm
+from . models import PasswordCategory, PasswordHint, GeneratedPassword
 from django.contrib import messages
-from django.http import HttpResponseRedirect, HttpResponse, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponse
 from cryptography.fernet import Fernet
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
+from django.utils.crypto import get_random_string
 
 
 @login_required
@@ -179,3 +180,118 @@ def update_password(request, pk):
         }
         form = PasswordHintForm(request.user, initial=initialData)
     return render(request, 'passwords/update_password.html', {'form': form})
+
+
+@login_required
+def create_generated_password(request):
+    if request.method == 'POST':
+        form = GeneratedPasswordForm(request.POST)
+        if form.is_valid():
+            formData = form.cleaned_data
+            generated_password = ''
+            if formData['security_level'] == 'Low':
+                generated_password = get_random_string(8)
+            elif formData['security_level'] == 'Medium':
+                generated_password = get_random_string(15)
+            else:
+                generated_password = get_random_string(20)
+
+            # Retrieve secret key of user and encode it.
+            secret_key = (request.user.user_secret_key).encode()
+            key = Fernet.generate_key()
+            cipher_suite = Fernet(secret_key)
+            encoded_text = cipher_suite.encrypt(str.encode(generated_password))
+
+            generated_password_obj = GeneratedPassword(
+                created_by=request.user,
+                password_belongs_to=formData['password_belongs_to'],
+                password_description=formData['password_description'],
+                encrypted_password=encoded_text.decode('utf-8'),
+                security_level=formData['security_level'],
+            )
+            generated_password_obj.save()
+            messages.add_message(request, messages.SUCCESS,
+                                 'You have successfully generated and stored password for %s !' % formData['password_belongs_to'])
+            return HttpResponseRedirect(reverse('passwords:generated_passwords'))
+        else:
+            pass
+            # if a GET (or any other method) we'll create a blank form
+    else:
+        form = GeneratedPasswordForm()
+    return render(request, 'passwords/generate_password.html', {'form': form})
+
+
+@login_required
+def update_generated_password(request, pk):
+    if request.method == 'POST':
+        form = GeneratedPasswordForm(request.POST)
+        if form.is_valid():
+            formData = form.cleaned_data
+            generated_password = ''
+            if formData['security_level'] == 'Low':
+                generated_password = get_random_string(8)
+            elif formData['security_level'] == 'Medium':
+                generated_password = get_random_string(15)
+            else:
+                generated_password = get_random_string(20)
+
+            # Retrieve secret key of user and encode it.
+            secret_key = (request.user.user_secret_key).encode()
+            key = Fernet.generate_key()
+            cipher_suite = Fernet(secret_key)
+            encoded_text = cipher_suite.encrypt(str.encode(generated_password))
+
+            generated_password_obj = GeneratedPassword.objects.get(id=pk)
+            # Updating values
+            generated_password_obj.password_belongs_to = formData['password_belongs_to']
+            generated_password_obj.password_description = formData['password_description']
+            generated_password_obj.security_level = formData['security_level']
+            generated_password_obj.encrypted_password = encoded_text.decode('utf-8')
+
+            generated_password_obj.save()
+            messages.add_message(request, messages.SUCCESS,
+                                 'You have successfully updated and stored password for %s !' % formData['password_belongs_to'])
+            return HttpResponseRedirect(reverse('passwords:generated_passwords'))
+        else:
+            pass
+            # if a GET (or any other method) we'll create a blank form
+    else:
+        generated_password_obj = GeneratedPassword.objects.get(id=pk)
+        if generated_password_obj.created_by_id != request.user.id:
+            raise PermissionDenied()
+        initialData = {
+            'password_belongs_to': generated_password_obj.password_belongs_to,
+            'security_level': generated_password_obj.security_level,
+            'password_description': generated_password_obj.password_description,
+        }
+        form = GeneratedPasswordForm(initial=initialData)
+    return render(request, 'passwords/update_generated_password.html', {'form': form})
+
+
+@login_required
+def delete_generated_password(request, pk):
+    if request.method == 'POST':
+        try:
+            generated_password_obj = GeneratedPassword.objects.get(id=pk)
+            generated_password_obj.delete()
+            messages.add_message(request, messages.SUCCESS,
+                                 'Generated Password was successfully deleted!')
+            return HttpResponseRedirect(reverse('passwords:home'))
+        except Exception as err:
+            print(err)
+            return HttpResponse('Some error occurred')
+    else:
+        generated_password_obj = GeneratedPassword.objects.get(id=pk)
+        if generated_password_obj.created_by_id != request.user.id:
+            raise PermissionDenied()
+        return render(request, 'passwords/delete_generated_password.html', {
+            'password_obj': generated_password_obj
+        })
+
+
+@login_required
+def list_generated_password(request):
+    generated_user_passwords = GeneratedPassword.objects.filter(created_by_id=request.user.id)
+    return render(request, 'passwords/list_generated_passwords.html', {
+        'generated_passwords': generated_user_passwords
+    })
