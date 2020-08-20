@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Password Manager - Delete File
+{% endblock %}
+
+{% block content %}
+
+   <form action="" method="post" enctype="multipart/form-data" class="container my-4">
+        <h4 class="text-danger my-3 text-center">ARE YOU SURE YOU WANT TO DELETE THIS FILE WITH DESCRIPTION
+            "{{ file_obj.file_description }}" ?
+        </h4>
+        {% csrf_token %}
+
+        <input type="submit" class="btn btn-danger my-3 rounded shadow-sm mx-auto" value="Yes, Delete this file!">
+        <a class="btn btn-warning my-3 rounded shadow-sm mx-auto" href={% url 'passwords:file_list' %}>Nope, take me back</a>
+    </form>
+{% endblock %}

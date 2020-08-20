@@ -1,6 +1,6 @@
 from django.shortcuts import render
-from . forms import PasswordCategoryForm, PasswordHintForm, GeneratedPasswordForm
-from . models import PasswordCategory, PasswordHint, GeneratedPassword
+from . forms import PasswordCategoryForm, PasswordHintForm, GeneratedPasswordForm, UploadFileForm
+from . models import PasswordCategory, PasswordHint, GeneratedPassword, FileEncrypt
 from django.contrib import messages
 from django.http import HttpResponseRedirect, HttpResponse
 from cryptography.fernet import Fernet
@@ -9,6 +9,8 @@ from django.urls import reverse
 from django.shortcuts import get_object_or_404
 from django.core.exceptions import PermissionDenied
 from django.utils.crypto import get_random_string
+from django.core.files.base import ContentFile
+import base64
 
 
 @login_required
@@ -294,4 +296,71 @@ def list_generated_password(request):
     generated_user_passwords = GeneratedPassword.objects.filter(created_by_id=request.user.id)
     return render(request, 'passwords/list_generated_passwords.html', {
         'generated_passwords': generated_user_passwords
+    })
+
+
+@login_required
+def upload_file(request):
+    if request.method == 'POST':
+        form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid():
+            formData = form.cleaned_data
+            uploaded_file = formData['actual_file']
+            # Encryption using secret key and cryptography module
+            secret_key = (request.user.user_secret_key).encode()
+            key = Fernet.generate_key()
+            cipher_suite = Fernet(secret_key)
+            file_data = uploaded_file.file.read()
+            encrypted_data = cipher_suite.encrypt(file_data)
+
+            # Saving the file object
+            file_object = FileEncrypt()
+            file_object.file_description = formData['file_description']
+            file_object.uploaded_by = request.user
+
+            # file_object.save()
+            content = ContentFile(base64.b64decode(encrypted_data))
+            file_object.actual_file.save('actual_file.txt', content)
+            file_object.save()
+            messages.add_message(request, messages.SUCCESS,
+                                 'You have successfully uploaded new file!')
+            return HttpResponseRedirect(reverse('passwords:file_list'))
+        else:
+            pass
+            # if a GET (or any other method) we'll create a blank form
+    else:
+        form = UploadFileForm()
+    return render(request, 'passwords/upload_file.html', {'form': form})
+
+
+@login_required
+def file_list(request):
+    all_user_files = FileEncrypt.objects.filter(uploaded_by_id=request.user.id)
+    return render(request, 'passwords/file_lists.html', {'files': all_user_files})
+
+
+@login_required
+def file_detail_view(request, pk):
+    pass
+
+
+@login_required
+def file_delete_view(request, pk):
+    if request.method == 'POST':
+        try:
+            uploaded_file = FileEncrypt.objects.get(id=pk)
+            uploaded_file.delete()
+            messages.add_message(request, messages.SUCCESS,
+                                 'Uploaded file was successfully deleted!')
+            return HttpResponseRedirect(reverse('passwords:file_list'))
+        except Exception as err:
+            print(err)
+            return HttpResponse('Some error occurred')
+    else:
+        uploaded_file = FileEncrypt.objects.get(id=pk)
+        if uploaded_file.uploaded_by_id != request.user.id:
+            raise PermissionDenied()
+
+    return render(request, 'passwords/delete_file.html', {
+        'file_obj': uploaded_file
     })

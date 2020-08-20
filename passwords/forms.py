@@ -96,6 +96,27 @@ class GeneratedPasswordForm(forms.ModelForm):
         fields = ('password_belongs_to', 'password_description', 'security_level',)
 
 
+class UploadFileForm(forms.ModelForm):
+    error_messages = {
+        'file_size': "Size of the uploaded file should not exceed 5 MB",
+    }
+    file_description = forms.CharField(label=("File Description"),
+                                    widget=forms.Textarea(attrs={'class': 'form-control', 'rows': 5}))
+    actual_file = forms.FileField(label=("Please Upload Your Profile Image"),
+                                 widget=forms.FileInput(attrs={'class': 'form-control-file'}))
+
+    def clean_actual_file(self):
+        actual_file = self.cleaned_data.get('actual_file')
+        if actual_file.size > 5242880:
+            raise forms.ValidationError(
+                self.error_messages['file_size'],
+                code='file_size'
+            )
+        return actual_file
+
+    class Meta:
+        model = FileEncrypt
+        fields = ('file_description', 'actual_file',)
 
 
 

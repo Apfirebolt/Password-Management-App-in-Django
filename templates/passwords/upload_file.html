@@ -1,18 +1,13 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Password Manager - Create Category
+    Password Manager - Upload File
 {% endblock %}
 
 {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
 
-    <form method="post" action="" class="container">
-        <h2 class="text-success my-3 text-center">CREATE PASSWORD CATEGORY</h2>
+    <form class="container" method="post" enctype="multipart/form-data">
+        <h2 class="text-center text-success my-3">UPLOAD A FILE</h2>
         {% csrf_token %}
         {% for each_field in form %}
             <div class="form-group">
@@ -29,7 +24,7 @@
             {% endfor %}
           </ul>
         {% endif %}
-        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Submit">
+        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Upload File">
     </form>
 
 {% endblock %}

@@ -42,9 +42,6 @@ input[type="color"]:focus,
     color: #0c5460;
     font-size: 1.5rem;
     margin: 0.5rem;
-    background-color: #8fd19e;
-    padding: 1rem;
-    border-radius: 10px;
 }
 
 .header_para {
@@ -159,6 +156,12 @@ a.list-group-item:hover {
     left: 50%;
     transform: translate(-50%, -50%);
     }
+}
+
+@media screen and (max-width: 800px) {
+  div.container > img {
+      width: 100%;
+  }
 }
 
 .alert-error {
