@@ -1,5 +1,6 @@
-{% extends 'base.html' %}
 
+{% extends 'base.html' %}
+{% load static %}
 {% block title %}
     Password Manager - Homepage
 {% endblock %}
@@ -10,5 +11,11 @@
         <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
     {% endfor %}
 {% endif %}
-<h1>Password Manager - Home Page</h1>
+<h2 class="text-success text-center my-3">PASSWORD MANAGER</h2>
+    <div class="row w-75 mx-auto my-3">
+        <img alt="Image Not Available" class="col-md-8" src={% static 'images/password_manager.png' %} />
+        <p class="col-md-4 h4">
+            Your one stop solution to manage all your passwords...
+        </p>
+    </div>
 {% endblock %}

@@ -321,8 +321,8 @@ def upload_file(request):
 
             # file_object.save()
             content = ContentFile(base64.b64decode(encrypted_data))
-            user_file_name = str(request.user.username) + get_random_string(3)
-            file_object.actual_file.save(user_file_name + '.txt', content)
+            user_file_name = str(request.user.username) + get_random_string(3) + '.txt'
+            file_object.actual_file.save(user_file_name, content)
             file_object.save()
             messages.add_message(request, messages.SUCCESS,
                                  'You have successfully uploaded new file!')
