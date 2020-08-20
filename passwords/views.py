@@ -11,6 +11,7 @@ from django.core.exceptions import PermissionDenied
 from django.utils.crypto import get_random_string
 from django.core.files.base import ContentFile
 import base64
+import io
 
 
 @login_required
@@ -320,7 +321,8 @@ def upload_file(request):
 
             # file_object.save()
             content = ContentFile(base64.b64decode(encrypted_data))
-            file_object.actual_file.save('actual_file.txt', content)
+            user_file_name = str(request.user.username) + get_random_string(3)
+            file_object.actual_file.save(user_file_name + '.txt', content)
             file_object.save()
             messages.add_message(request, messages.SUCCESS,
                                  'You have successfully uploaded new file!')
@@ -341,7 +343,21 @@ def file_list(request):
 
 @login_required
 def file_detail_view(request, pk):
-    pass
+    file_obj = FileEncrypt.objects.get(id=pk)
+    if file_obj.uploaded_by_id != request.user.id:
+        raise PermissionDenied()
+    # First load the encrypted file and read it
+    encrypted_file_data = file_obj.actual_file.file.read()
+
+    # Use encoding on the file read
+    # content = ContentFile(base64.b64encode(encrypted_file_data))
+
+    # Load the user secret key
+    # secret_key = (request.user.user_secret_key).encode()
+    # key = Fernet.generate_key()
+    # cipher_suite = Fernet(secret_key)
+
+    return render(request, 'passwords/file_detail.html', {'file_obj': file_obj})
 
 
 @login_required

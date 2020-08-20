@@ -8,6 +8,16 @@
 
     <div class="container">
         <h2 class="text-center text-success my-3">FILE DETAIL</h2>
+        <div class="container-fluid shadow rounded p-3 my-3">
+            <p>
+                {{ file_obj.file_description }}
+            </p>
+
+            <p>
+                {{ file_obj.get_file_size }}
+            </p>
+            <button class="btn btn-success">Download Decrypted File</button>
+        </div>
     </div>
 
 {% endblock %}

@@ -22,13 +22,18 @@
             {% for each_file in files %}
                 <div class="container-fluid shadow border-dark p-3 my-3">
                     <div class="d-md-flex d-sm-block d justify-content-between">
-                        <p class="text-secondary">
-                            File Description :- {{ each_file.file_description }}
-                        </p>
+                        <div class="text-container">
+                            <p class="text-secondary">
+                                File Description :- {{ each_file.file_description }}
+                            </p>
+                            <p class="text-secondary">
+                                File Size :- {{ each_file.get_file_size }}
+                            </p>
+                        </div>
                         <div class="container_fluid">
                             <a class="btn btn-danger m-1" href={% url 'passwords:file_delete' pk=each_file.id %}>Delete File</a>
-                            <button class="btn btn-secondary m-1 reveal_password_button" data-target={{ each_file.id }}>
-                                Decrypt and View</button>
+                            <a class="btn btn-secondary m-1" href={% url 'passwords:file_detail' pk=each_file.id %}>
+                                Decrypt and View</a>
                         </div>
                     </div>
                 </div>

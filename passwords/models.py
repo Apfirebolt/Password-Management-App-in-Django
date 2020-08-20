@@ -1,6 +1,7 @@
 from django.db import models
 from password_manager.settings import AUTH_USER_MODEL
 from cryptography.fernet import Fernet
+import math
 
 
 class PasswordCategory(models.Model):
@@ -66,6 +67,16 @@ class FileEncrypt(models.Model):
     uploaded_by = models.ForeignKey(AUTH_USER_MODEL, on_delete=models.CASCADE)
     file_description = models.CharField("Description of the file", max_length=200)
     actual_file = models.FileField(upload_to='file_uploads')
+
+    def get_file_size(self):
+        size_bytes = self.actual_file.size
+        if size_bytes == 0:
+            return "0B"
+        size_name = ("B", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB")
+        i = int(math.floor(math.log(size_bytes, 1024)))
+        p = math.pow(1024, i)
+        s = round(size_bytes / p, 2)
+        return "%s %s" % (s, size_name[i])
 
     def __str__(self):
         return str(self.uploaded_by.username) + '-' + str(self.file_description)
