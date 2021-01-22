@@ -320,12 +320,15 @@ def upload_file(request):
             file_object.uploaded_by = request.user
 
             # file_object.save()
-            content = ContentFile(base64.b64decode(encrypted_data))
-            user_file_name = str(request.user.username) + get_random_string(3) + '.txt'
-            file_object.actual_file.save(user_file_name, content)
-            file_object.save()
-            messages.add_message(request, messages.SUCCESS,
-                                 'You have successfully uploaded new file!')
+            try:
+                content = ContentFile(base64.b64decode(encrypted_data))
+                user_file_name = str(request.user.username) + get_random_string(3) + '.txt'
+                file_object.actual_file.save(user_file_name, content)
+                file_object.save()
+                messages.add_message(request, messages.SUCCESS,
+                                     'You have successfully uploaded new file!')
+            except Exception as err:
+                print('Error')
             return HttpResponseRedirect(reverse('passwords:file_list'))
         else:
             pass

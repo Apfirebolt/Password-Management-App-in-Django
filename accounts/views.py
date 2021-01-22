@@ -125,7 +125,7 @@ def update_password(request):
                 userObj.save()
                 messages.add_message(request, messages.SUCCESS,
                                      'Your Profile Password was successfully updated!')
-                return HttpResponseRedirect(reverse('accounts:home'))
+                return HttpResponseRedirect(reverse('home'))
             else:
                 pass
         except Exception as err:
