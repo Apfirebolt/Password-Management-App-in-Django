@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    restart: always
+    environment:
+      POSTGRES_DB: password_manager
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pass123
+    ports:
+      - "5433:5432"  # Maps host port 5433 to container port 5432
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+  web:
+    build: .
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80" # Map host port 80 to Nginx container port 80
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro # Mount your Nginx config read-only
+    depends_on:
+      - web # Nginx depends on the web service to be up
+
+volumes:
+  db_data:
