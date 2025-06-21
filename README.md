@@ -75,6 +75,41 @@ is used behind the scenes to achieve this functionality.
 
 ![alt text](./screenshots/password_detail.PNG)
 
+## Issues
+
+Platform issue with the Docker compose file in spawing containers for MYSQL and PHPMYADMIN
+
+```yaml
+version: '3.8'
+
+services:
+
+  db:
+    image: mysql:8.0 
+    platform: linux/arm64/v8 # THIS IS CORRECT for M2 Mac
+    ports:
+      - 3306:3306
+    environment:
+      - MYSQL_ROOT_PASSWORD=pass123
+      - MYSQL_DATABASE=password_manager
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=pass123
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    platform: linux/arm64/v8 # THIS IS CORRECT for M2 Mac
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=db
+      - PMA_USER=root
+      - PMA_PASSWORD=pass123
+    depends_on:
+      - db
+```
+
 
 
 

@@ -15,14 +15,20 @@
     <h2 class="text-success my-3 text-center">LOGIN</h2>
         {% csrf_token %}
 
-        <div class="form-group">
-            <label for="email">Please Enter Your Email</label>
-            <input type="email" class="form-control" name="email" id="email" />
-        </div>
+        <div class="row">
+            <div class="col-md-6">
+                 <div class="form-group">
+                    <label for="email">Please Enter Your Email</label>
+                    <input type="email" class="form-control" name="email" id="email" />
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label for="password">Please Enter Your Password</label>
-            <input type="password" class="form-control" name="password" id="password" />
+            <div class="col-md-6">
+                 <div class="form-group">
+                    <label for="password">Please Enter Your Password</label>
+                    <input type="password" class="form-control" name="password" id="password" />
+                </div>
+            </div>
         </div>
 
         <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="LOGIN">

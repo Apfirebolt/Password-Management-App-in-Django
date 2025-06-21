@@ -7,24 +7,85 @@
 {% block content %}
 
     <form action="" method="post" enctype="multipart/form-data" class="container">
-    <h2 class="text-success my-3 text-center">REGISTER</h2>
+        <h2 class="text-success my-3 text-center">REGISTER</h2>
+        {% comment %} Or: <h2 class="text-success my-3 text-center">ADD PASSWORD HINT</h2> {% endcomment %}
         {% csrf_token %}
-        {% for each_field in form %}
-            <div class="form-group">
-                <label for={{ each_field.name }}>{{ each_field.label }}</label>
-                {{ each_field }}
-            </div>
-       {% endfor %}
 
-        {% if form.errors %}
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
+                    {{ form.username|add_class:"form-control" }}
+                    {% if form.username.help_text %}<small class="form-text text-muted">{{ form.username.help_text }}</small>{% endif %}
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    {# Assuming 'email' is a field in your 'form' object for a registration form #}
+                    <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+                    {{ form.email|add_class:"form-control" }}
+                    {% if form.email.help_text %}<small class="form-text text-muted">{{ form.email.help_text }}</small>{% endif %}
+                    {% if form.email.errors %}
+                        {% for error in form.email.errors %}
+                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
+                    {{ form.password1|add_class:"form-control" }}
+                    {% if form.password1.help_text %}<small class="form-text text-muted">{{ form.password1.help_text }}</small>{% endif %}
+                    {% if form.password1.errors %}
+                        {% for error in form.password1.errors %}
+                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
+                    {{ form.password2|add_class:"form-control" }}
+                    {% if form.password2.help_text %}<small class="form-text text-muted">{{ form.password2.help_text }}</small>{% endif %}
+                    {% if form.password2.errors %}
+                        {% for error in form.password2.errors %}
+                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label for="{{ form.profile_image.id_for_label }}">{{ form.profile_image.label }}</label>
+                    {{ form.profile_image|add_class:"form-control" }}
+                </div>
+            </div>
+        </div>
+
+        {% if form.non_field_errors %}
         <h3 class="text-danger my-3 text-center">You have errors in form, please correct them and try again!</h3>
           <ul>
-            {% for key,value in form.errors.items %}
-              <li class="alert alert-danger" role="alert">{{ value|escape }}</li>
+            {% for error in form.non_field_errors %}
+              <li class="alert alert-danger" role="alert">{{ error|escape }}</li>
             {% endfor %}
           </ul>
         {% endif %}
-        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Submit">
+
+        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto d-block mt-3" value="Submit">
     </form>
 {% endblock %}
-
