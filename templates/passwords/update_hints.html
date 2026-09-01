@@ -1,40 +1,117 @@
 {% extends 'base.html' %}
 
-{% block title %}
-    Password Manager - Update Hints
-{% endblock %}
+{% block title %}Update Password Hints - {{ password_obj.password_belongs_to }} | Password Manager{% endblock %}
 
 {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-md-9">
 
-    <form action="" method="post" enctype="multipart/form-data" class="container">
-    <h2 class="text-success my-3 text-center">UPDATE PASSWORD HINTS</h2>
-        {% csrf_token %}
+            <!-- Flash Messages -->
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-        <div class="form-group">
-            <label for="first_password_hint">First Password Hint</label>
-            <input type="text" value={{ password_obj.password_hint_one }} class="form-control" name="first_password_hint" id="first_password_hint" />
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-circle mb-3" style="width: 56px; height: 56px;">
+                            <span class="fs-4">✏️</span>
+                        </div>
+                        <h2 class="text-success fw-bold">Update Password Hints</h2>
+                        <p class="text-muted small">
+                            Modifying clues for <span class="fw-semibold text-dark">{{ password_obj.password_belongs_to }}</span> ({{ password_obj.linked_category.category_name }})
+                        </p>
+                    </div>
+
+                    <form action="" method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        <!-- First Password Hint -->
+                        <div class="mb-3">
+                            <label for="first_password_hint" class="form-label fw-semibold small text-secondary">
+                                First Password Hint <span class="text-danger">*</span>
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                name="first_password_hint" 
+                                id="first_password_hint" 
+                                value="{{ password_obj.password_hint_one|default_if_none:'' }}" 
+                                placeholder="e.g., Favorite pet name + graduation year"
+                                required 
+                            />
+                            <div class="form-text text-muted small">Your primary textual clue to help jog your memory.</div>
+                        </div>
+
+                        <!-- Second Password Hint -->
+                        <div class="mb-3">
+                            <label for="second_password_hint" class="form-label fw-semibold small text-secondary">
+                                Second Password Hint
+                            </label>
+                            <input 
+                                type="text" 
+                                class="form-control" 
+                                name="second_password_hint" 
+                                id="second_password_hint" 
+                                value="{{ password_obj.password_hint_two|default_if_none:'' }}" 
+                                placeholder="e.g., First concert attended" 
+                            />
+                            <div class="form-text text-muted small">Optional secondary reference clue.</div>
+                        </div>
+
+                        <!-- Password Hint Image File Input -->
+                        <div class="mb-4">
+                            <label for="hint_image_changed" class="form-label fw-semibold small text-secondary">
+                                Replace Hint Image
+                            </label>
+                            <input 
+                                type="file" 
+                                class="form-control" 
+                                name="hint_image_changed" 
+                                id="hint_image_changed" 
+                                accept="image/*"
+                            />
+                            <div class="form-text text-muted small">Leave empty if you want to keep the current hint image.</div>
+                        </div>
+
+                        <!-- Current Image Preview -->
+                        {% if password_obj.hint_image %}
+                            <div class="mb-4 p-3 bg-light rounded-3 border text-center">
+                                <label class="text-secondary small fw-semibold text-uppercase d-block mb-2">Current Visual Clue</label>
+                                <img 
+                                    src="{{ password_obj.hint_image.url }}" 
+                                    alt="Current hint image for {{ password_obj.password_belongs_to }}" 
+                                    class="img-fluid rounded border shadow-sm" 
+                                    style="max-height: 180px; object-fit: contain;"
+                                />
+                            </div>
+                        {% endif %}
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4 pt-2 border-top">
+                            <a href="{% url 'passwords:detail_password' pk=password_obj.id %}" class="btn btn-outline-secondary px-4 py-2 small fw-semibold">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success px-4 py-2 small fw-semibold shadow-sm">
+                                Save Hint Changes
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+
         </div>
-
-        <div class="form-group">
-            <label for="second_password_hint">Second Password Hint</label>
-            <input type="text" value={{ password_obj.password_hint_two }} class="form-control" name="second_password_hint" id="second_password_hint" />
-        </div>
-
-        <div class="form-group">
-            <label for="hint_image_changed">Password Hint Image</label>
-            <input type="file" class="form-file-control" name="hint_image_changed" id="hint_image_changed" />
-        </div>
-
-        <div class="container-fluid">
-            <img  class="img-thumbnail w-50 d-block my-3" alt="Password Hint Image" src={{ password_obj.hint_image.url }}>
-
-        <input type="submit" class="btn btn-warning my-3 rounded shadow-sm mx-auto" value="Update Password Hints">
-        </div>
-    </form>
+    </div>
+</div>
 {% endblock %}
-
