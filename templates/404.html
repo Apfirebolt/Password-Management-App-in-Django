@@ -1,9 +1,49 @@
 {% extends 'base.html' %}
 
-{% block title %}
-
-{% endblock %}
+{% block title %}404 - Page Not Found | Password Manager{% endblock %}
 
 {% block content %}
-    <h1 class="text-danger m-3">Page Not found 404</h1>
+<div class="container my-auto py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 text-center">
+            
+            <div class="card shadow-sm border-0 rounded-3 p-4 p-md-5">
+                <div class="card-body">
+                    
+                    <!-- Free 404 Vector Illustration -->
+                    <div class="mb-4">
+                        <img 
+                            src="https://illustrations.popertee.com/illustrations/404.svg" 
+                            onerror="this.onerror=null; this.src='https://raw.githubusercontent.com/404-illustrations/illustrations/master/svg/404.svg';"
+                            alt="404 Page Not Found" 
+                            class="img-fluid" 
+                            style="max-height: 220px;"
+                        />
+                    </div>
+
+                    <!-- Error Code & Heading -->
+                    <h1 class="display-5 fw-bold text-success mb-2">404</h1>
+                    <h3 class="fw-semibold text-dark mb-3">Lost in Cyberspace?</h3>
+                    
+                    <!-- Description -->
+                    <p class="text-secondary small mb-4">
+                        The page or vault entry you are looking for might have been moved, renamed, or deleted.
+                    </p>
+
+                    <!-- Navigation CTA -->
+                    <div class="d-flex flex-column flex-sm-row justify-content-center gap-2">
+                        <a href="javascript:history.back()" class="btn btn-outline-secondary px-4 py-2 small fw-semibold">
+                            &larr; Go Back
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-success px-4 py-2 small fw-semibold shadow-sm">
+                            Return to Dashboard
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
 {% endblock %}

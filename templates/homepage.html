@@ -1,21 +1,87 @@
-
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}
-    Password Manager - Homepage
-{% endblock %}
+
+{% block title %}Password Manager - Secure Vault & Hint Organizer{% endblock %}
 
 {% block content %}
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
-    {% endfor %}
-{% endif %}
-<h2 class="text-success text-center my-3">PASSWORD MANAGER</h2>
-    <div class="row w-75 mx-auto my-3">
-        <img alt="Image Not Available" class="col-md-8" src={% static 'images/password_manager.png' %} />
-        <p class="col-md-4 h4">
-            Your one stop solution to manage all your passwords...
-        </p>
+<div class="container py-4 py-md-5">
+
+    <!-- Flash Messages -->
+    {% if messages %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-lg-10">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Hero Section -->
+    <div class="row align-items-center g-5 py-4">
+        
+        <!-- Left: Text & CTA -->
+        <div class="col-lg-6 text-center text-lg-start">
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-1 mb-3 rounded-pill bg-success bg-opacity-10 text-success border border-success border-opacity-25 small fw-semibold">
+                <span>&#128274;</span> Zero-Knowledge Architecture
+            </div>
+            
+            <h1 class="display-4 fw-bold text-dark lh-sm mb-3">
+                Secure Password Management, <span class="text-success">Simplified.</span>
+            </h1>
+            
+            <p class="lead text-secondary mb-4">
+                Your centralized vault to generate, encrypt, and organize credentials with flexible text and visual hint systems.
+            </p>
+
+            <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-lg-start gap-3">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'accounts:dashboard' %}" class="btn btn-success btn-lg px-4 py-2 fw-semibold shadow-sm">
+                        Go to Vault &rarr;
+                    </a>
+                {% else %}
+                    <a href="{% url 'accounts:register' %}" class="btn btn-success btn-lg px-4 py-2 fw-semibold shadow-sm">
+                        Create Free Vault
+                    </a>
+                    <a href="{% url 'accounts:login' %}" class="btn btn-outline-secondary btn-lg px-4 py-2 fw-semibold">
+                        Sign In
+                    </a>
+                {% endif %}
+            </div>
+
+            <!-- Quick Stats/Badges -->
+            <div class="row pt-4 mt-4 border-top text-muted small g-3">
+                <div class="col-4">
+                    <div class="fw-bold text-dark fs-5">AES-256</div>
+                    <div>Strong Cipher</div>
+                </div>
+                <div class="col-4">
+                    <div class="fw-bold text-dark fs-5">Multi-Hint</div>
+                    <div>Image & Text</div>
+                </div>
+                <div class="col-4">
+                    <div class="fw-bold text-dark fs-5">Encrypted</div>
+                    <div>File Vault</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right: Hero Graphic / Illustration -->
+        <div class="col-lg-6 text-center">
+            <div class="p-3 bg-white rounded-4 shadow-sm border">
+                <img 
+                    src="{% static 'images/password_manager.png' %}" 
+                    alt="Password Manager Dashboard Preview" 
+                    class="img-fluid rounded-3"
+                    onerror="this.onerror=null; this.src='https://illustrations.popertee.com/illustrations/security.svg';"
+                />
+            </div>
+        </div>
+
     </div>
+
+</div>
 {% endblock %}
