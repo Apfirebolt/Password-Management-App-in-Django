@@ -1,32 +1,78 @@
-<div class="container-fluid p-5 row">
-  <div class="col-md-4">
-    <h4 class="text-success text-center my-3">
-      Streamline Password Management
-    </h4>
-    <p>- Create Categories for different passwords you need to manage.</p>
-    <p>- You can have multiple hints for each password you store.</p>
-    <p>- Add visual hint in form of image.</p>
-    <p>
-      - Easily update password hints or in case you have changed the password,
-      update all the fields.
-    </p>
+<!-- partials/footer.html -->
+<footer class="bg-dark text-light pt-5 pb-4 mt-auto border-top border-secondary">
+  <div class="container">
+    <div class="row g-4">
+      <!-- Column 1: Feature Overview -->
+      <div class="col-lg-4 col-md-6">
+        <h5 class="text-success fw-bold mb-3 d-flex align-items-center">
+          <span class="me-2">&#128273;</span> Streamline Management
+        </h5>
+        <ul class="list-unstyled text-secondary small mb-0 lh-lg">
+          <li class="d-flex align-items-start mb-2">
+            <span class="text-success me-2">&bull;</span>
+            <span>Organize passwords into custom, structured categories.</span>
+          </li>
+          <li class="d-flex align-items-start mb-2">
+            <span class="text-success me-2">&bull;</span>
+            <span>Store multiple text and visual image hints per entry.</span>
+          </li>
+          <li class="d-flex align-items-start mb-2">
+            <span class="text-success me-2">&bull;</span>
+            <span>Seamlessly update encrypted fields and hint metadata.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 2: Architecture & Security -->
+      <div class="col-lg-4 col-md-6">
+        <h5 class="text-success fw-bold mb-3 d-flex align-items-center">
+          <span class="me-2">&#9881;</span> Robust & User-Friendly
+        </h5>
+        <ul class="list-unstyled text-secondary small mb-0 lh-lg">
+          <li class="d-flex align-items-start mb-2">
+            <span class="text-success me-2">&bull;</span>
+            <span>Multi-tenant architecture powered by Django.</span>
+          </li>
+          <li class="d-flex align-items-start mb-2">
+            <span class="text-success me-2">&bull;</span>
+            <span>Built-in cryptographically secure random password generator.</span>
+          </li>
+          <li class="d-flex align-items-start mb-2">
+            <span class="text-success me-2">&bull;</span>
+            <span>Zero-plain-text storage with on-demand secure retrieval.</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Column 3: Encryption & File Vault -->
+      <div class="col-lg-4 col-md-12">
+        <h5 class="text-success fw-bold mb-3 d-flex align-items-center">
+          <span class="me-2">&#128737;</span> Encrypted & Secured
+        </h5>
+        <p class="text-secondary small lh-base mb-3">
+          Leverage our encrypted vault to store and protect sensitive documents using industry-standard Python cryptography libraries and AES-level ciphers.
+        </p>
+        <div class="p-2 rounded bg-black bg-opacity-25 border border-secondary border-opacity-25">
+          <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 me-1">Django</span>
+          <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 me-1">Cryptography</span>
+          <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25">AES Encrypted</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Divider -->
+    <hr class="my-4 border-secondary opacity-25">
+
+    <!-- Sub-footer: Copyright & Links -->
+    <div class="row align-items-center small text-secondary">
+      <div class="col-md-6 text-center text-md-start mb-2 mb-md-0">
+        &copy; {{ now|date:"Y" }} Password Manager. All rights reserved.
+      </div>
+      <div class="col-md-6 text-center text-md-end">
+        <a href="#" class="text-secondary text-decoration-none me-3 hover-link">Privacy Policy</a>
+        <a href="#" class="text-secondary text-decoration-none me-3 hover-link">Security Specs</a>
+        <a href="#" class="text-secondary text-decoration-none hover-link">Contact</a>
+      </div>
+    </div>
   </div>
-  <div class="col-md-4">
-    <h4 class="text-success text-center my-3">Easy To Use</h4>
-    <p>
-      - Multi-user and secured platform created in Django using cryptography
-      module of Python.
-    </p>
-    <p>
-      - Generate secured random passwords and store them in encrypted form, of
-      course you can view them if required :).
-    </p>
-  </div>
-  <div class="col-md-4">
-    <h4 class="text-success text-center my-3">Encrypted and Secured</h4>
-    <p>
-      Use file manager to store and encrypt your files using secured
-      cryptographic techniques and libraries.
-    </p>
-  </div>
-</div>
+</footer>

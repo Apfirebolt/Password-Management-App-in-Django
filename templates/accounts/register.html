@@ -1,91 +1,148 @@
 {% extends 'base.html' %}
 {% load widget_tweaks %}
-{% block title %}
-    Password Manager - Register
-{% endblock %}
+
+{% block title %}Password Manager - Register{% endblock %}
 
 {% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+                    
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h2 class="text-success fw-bold">Create an Account</h2>
+                        <p class="text-muted small">Set up your secure vault to manage and encrypt passwords</p>
+                    </div>
 
-    <form action="" method="post" enctype="multipart/form-data" class="container">
-        <h2 class="text-success my-3 text-center">REGISTER</h2>
-        {% comment %} Or: <h2 class="text-success my-3 text-center">ADD PASSWORD HINT</h2> {% endcomment %}
-        {% csrf_token %}
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
-                    {{ form.username|add_class:"form-control" }}
-                    {% if form.username.help_text %}<small class="form-text text-muted">{{ form.username.help_text }}</small>{% endif %}
-                    {% if form.username.errors %}
-                        {% for error in form.username.errors %}
-                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
-                        {% endfor %}
+                    <!-- Non-field / Global Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                            <h6 class="alert-heading fw-bold mb-1">Please fix the following issues:</h6>
+                            <ul class="mb-0 ps-3 small">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
                     {% endif %}
-                </div>
-            </div>
 
-            <div class="col-md-6">
-                <div class="form-group">
-                    {# Assuming 'email' is a field in your 'form' object for a registration form #}
-                    <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
-                    {{ form.email|add_class:"form-control" }}
-                    {% if form.email.help_text %}<small class="form-text text-muted">{{ form.email.help_text }}</small>{% endif %}
-                    {% if form.email.errors %}
-                        {% for error in form.email.errors %}
-                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        <!-- Username & Email -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                    {{ form.username.label }}
+                                </label>
+                                {% if form.username.errors %}
+                                    {{ form.username|add_class:"form-control is-invalid" }}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.username.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.username|add_class:"form-control" }}
+                                {% endif %}
+                                {% if form.username.help_text %}
+                                    <div class="form-text text-muted small">{{ form.username.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                    {{ form.email.label }}
+                                </label>
+                                {% if form.email.errors %}
+                                    {{ form.email|add_class:"form-control is-invalid" }}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.email.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.email|add_class:"form-control" }}
+                                {% endif %}
+                                {% if form.email.help_text %}
+                                    <div class="form-text text-muted small">{{ form.email.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Passwords -->
+                        <div class="row g-3 mb-3">
+                            <div class="col-md-6">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                    {{ form.password1.label }}
+                                </label>
+                                {% if form.password1.errors %}
+                                    {{ form.password1|add_class:"form-control is-invalid" }}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.password1.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.password1|add_class:"form-control" }}
+                                {% endif %}
+                                {% if form.password1.help_text %}
+                                    <div class="form-text text-muted small">{{ form.password1.help_text }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                    {{ form.password2.label }}
+                                </label>
+                                {% if form.password2.errors %}
+                                    {{ form.password2|add_class:"form-control is-invalid" }}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in form.password2.errors %}{{ error }}{% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ form.password2|add_class:"form-control" }}
+                                {% endif %}
+                                {% if form.password2.help_text %}
+                                    <div class="form-text text-muted small">{{ form.password2.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <!-- Profile Image -->
+                        <div class="mb-4">
+                            <label for="{{ form.profile_image.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                {{ form.profile_image.label }}
+                            </label>
+                            {% if form.profile_image.errors %}
+                                {{ form.profile_image|add_class:"form-control is-invalid" }}
+                                <div class="invalid-feedback d-block">
+                                    {% for error in form.profile_image.errors %}{{ error }}{% endfor %}
+                                </div>
+                            {% else %}
+                                {{ form.profile_image|add_class:"form-control" }}
+                            {% endif %}
+                            {% if form.profile_image.help_text %}
+                                <div class="form-text text-muted small">{{ form.profile_image.help_text }}</div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-success py-2 fw-semibold shadow-sm">
+                                Create Account
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- Sign-in Link -->
+                    <div class="text-center mt-4 pt-3 border-top">
+                        <span class="text-muted small">Already have an account?</span>
+                        <a href="{% url 'accounts:login' %}" class="text-success text-decoration-none fw-semibold small ms-1">
+                            Log In
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.password1.id_for_label }}">{{ form.password1.label }}</label>
-                    {{ form.password1|add_class:"form-control" }}
-                    {% if form.password1.help_text %}<small class="form-text text-muted">{{ form.password1.help_text }}</small>{% endif %}
-                    {% if form.password1.errors %}
-                        {% for error in form.password1.errors %}
-                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.password2.id_for_label }}">{{ form.password2.label }}</label>
-                    {{ form.password2|add_class:"form-control" }}
-                    {% if form.password2.help_text %}<small class="form-text text-muted">{{ form.password2.help_text }}</small>{% endif %}
-                    {% if form.password2.errors %}
-                        {% for error in form.password2.errors %}
-                            <div class="alert alert-danger mt-1" role="alert">{{ error }}</div>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label for="{{ form.profile_image.id_for_label }}">{{ form.profile_image.label }}</label>
-                    {{ form.profile_image|add_class:"form-control" }}
-                </div>
-            </div>
-        </div>
-
-        {% if form.non_field_errors %}
-        <h3 class="text-danger my-3 text-center">You have errors in form, please correct them and try again!</h3>
-          <ul>
-            {% for error in form.non_field_errors %}
-              <li class="alert alert-danger" role="alert">{{ error|escape }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-
-        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto d-block mt-3" value="Submit">
-    </form>
+    </div>
+</div>
 {% endblock %}
