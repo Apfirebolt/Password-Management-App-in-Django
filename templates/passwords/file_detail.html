@@ -1,23 +1,106 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-    Password Manager - File Detail
-{% endblock %}
+{% block title %}File Detail - {{ file_obj.file_description|default:"Encrypted File" }} | Password Manager{% endblock %}
 
 {% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
 
-    <div class="container">
-        <h2 class="text-center text-success my-3">FILE DETAIL</h2>
-        <div class="container-fluid shadow rounded p-3 my-3">
-            <p>
-                {{ file_obj.file_description }}
-            </p>
+            <!-- Flash Messages -->
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
 
-            <p>
-                {{ file_obj.get_file_size }}
-            </p>
-            <button class="btn btn-success">Download Decrypted File</button>
+            <div class="card shadow-sm border-0 rounded-3 overflow-hidden">
+
+                <!-- Header Bar -->
+                <div class="card-header bg-white border-bottom p-4 d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle" style="width: 44px; height: 44px;">
+                            <span class="fs-5">&#128196;</span>
+                        </div>
+                        <div>
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary border border-secondary border-opacity-25 px-2 py-1 rounded-pill small">
+                                Encrypted Vault File
+                            </span>
+                            <h4 class="fw-bold text-dark mb-0 mt-1">File Details</h4>
+                        </div>
+                    </div>
+                    <a href="{% url 'passwords:file_list' %}" class="btn btn-outline-secondary btn-sm px-3 py-1 align-self-start align-self-sm-center">
+                        &larr; All Files
+                    </a>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Metadata Table / Key-Value Grid -->
+                    <div class="bg-light rounded-3 p-3 border mb-4">
+                        <div class="row g-3">
+                            <div class="col-sm-6">
+                                <span class="text-muted fw-bold d-block small" style="font-size: 0.75rem;">DESCRIPTION</span>
+                                <p class="fw-semibold text-dark mb-0">
+                                    {{ file_obj.file_description|default:"No description provided." }}
+                                </p>
+                            </div>
+                            <div class="col-sm-6">
+                                <span class="text-muted fw-bold d-block small" style="font-size: 0.75rem;">FILE SIZE</span>
+                                <p class="fw-semibold text-dark mb-0">
+                                    {{ file_obj.get_file_size|default:"Unknown size" }}
+                                </p>
+                            </div>
+                            {% if file_obj.uploaded_at %}
+                                <div class="col-sm-6">
+                                    <span class="text-muted fw-bold d-block small" style="font-size: 0.75rem;">UPLOADED ON</span>
+                                    <p class="text-dark small mb-0">
+                                        {{ file_obj.uploaded_at|date:"M d, Y H:i" }}
+                                    </p>
+                                </div>
+                            {% endif %}
+                            <div class="col-sm-6">
+                                <span class="text-muted fw-bold d-block small" style="font-size: 0.75rem;">SECURITY STATUS</span>
+                                <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill small">
+                                    &#10003; 256-bit AES Encrypted
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Security Notice Card -->
+                    <div class="p-3 rounded-3 bg-info bg-opacity-10 border border-info border-opacity-25 text-start mb-4">
+                        <div class="d-flex align-items-start gap-2">
+                            <span class="fs-5 text-info">&#128274;</span>
+                            <div>
+                                <h6 class="fw-bold text-dark mb-1 small">Client-Key Decryption On Demand</h6>
+                                <p class="text-muted small mb-0">
+                                    Clicking download will decrypt the encrypted payload on the server using your master secret key and stream the plain binary file directly to your browser.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pt-3 border-top">
+                        <a href="{% url 'passwords:download_file' pk=file_obj.id %}" class="btn btn-success px-4 py-2 small fw-semibold shadow-sm">
+                            &#128190; Download Decrypted File
+                        </a>
+                        <a href="{% url 'passwords:delete_file' pk=file_obj.id %}" class="btn btn-outline-danger px-3 py-2 small fw-semibold">
+                            &#128465; Delete File
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+
         </div>
     </div>
-
+</div>
 {% endblock %}

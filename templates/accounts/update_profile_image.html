@@ -1,41 +1,117 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
-{% block title %}
-    Password Manager - Update Profile Image
-{% endblock %}
+{% block title %}Update Profile Photo | Password Manager{% endblock %}
 
 {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
 
-    <form action="" method="post" enctype="multipart/form-data" class="container">
-    <h2 class="text-success my-3 text-center">UPDATE PROFILE IMAGE</h2>
-        {% if request.user.profile_image %}
-            <img height="350" width="450" class="img-rounded" src={{ request.user.profile_image.url }}>
-            {% else %}
-            <h3 class="text-center text-warning">You haven't uploaded any picture yet!</h3>
-        {% endif %}
-        {% csrf_token %}
-        {% for each_field in form %}
-            <div class="form-group">
-                <label for={{ each_field.name }}>{{ each_field.label }}</label>
-                {{ each_field }}
+            <!-- Flash Messages -->
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle mb-3" style="width: 56px; height: 56px;">
+                            <span class="fs-4">&#128247;</span>
+                        </div>
+                        <h2 class="text-success fw-bold">Update Profile Photo</h2>
+                        <p class="text-muted small">Upload a new profile picture or avatar for your account</p>
+                    </div>
+
+                    <!-- Current Profile Image Preview -->
+                    <div class="text-center mb-4 pb-3 border-bottom">
+                        <label class="text-secondary small fw-semibold text-uppercase d-block mb-3">Current Photo</label>
+                        {% if request.user.profile_image %}
+                            <img 
+                                src="{{ request.user.profile_image.url }}" 
+                                alt="{{ request.user.username }}'s profile photo" 
+                                class="rounded-circle object-fit-cover shadow-sm border border-2 border-success p-1" 
+                                style="width: 150px; height: 150px;"
+                            />
+                        {% else %}
+                            <div class="rounded-circle bg-light d-inline-flex align-items-center justify-content-center shadow-sm border border-2 border-secondary border-opacity-25" style="width: 140px; height: 140px;">
+                                <span class="fs-1 text-secondary">&#128100;</span>
+                            </div>
+                            <div class="alert alert-warning py-2 px-3 small mt-3 mb-0" role="alert">
+                                No profile image currently uploaded.
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Non-Field / Global Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                            <h6 class="alert-heading fw-bold mb-1">Please fix the following:</h6>
+                            <ul class="mb-0 ps-3 small">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    <!-- Form -->
+                    <form method="post" enctype="multipart/form-data" novalidate>
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                    {{ field.label }}
+                                </label>
+
+                                {% if field.errors %}
+                                    {{ field|add_class:"form-control is-invalid" }}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ field|add_class:"form-control" }}
+                                {% endif %}
+
+                                {% if field.help_text %}
+                                    <div class="form-text text-muted small">{{ field.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <!-- Action Buttons -->
+                        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4 pt-2 border-top">
+                            <a href="{% url 'accounts:home' %}" class="btn btn-outline-secondary px-4 py-2 small fw-semibold">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success px-4 py-2 small fw-semibold shadow-sm">
+                                Upload &amp; Save
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
             </div>
-       {% endfor %}
 
-        {% if form.errors %}
-        <h3 class="text-danger my-3 text-center">You have errors in form, please correct them and try again!</h3>
-          <ul>
-            {% for key,value in form.errors.items %}
-              <li class="alert alert-danger" role="alert">{{ value|escape }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
+            <!-- Guidelines Card -->
+            <div class="mt-4 p-3 bg-light rounded-3 border text-center small text-muted">
+                &#128161; <strong>Tip:</strong> Square PNG or JPG images with a resolution of at least 300x300px work best.
+            </div>
 
-        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Update Image">
-    </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
-
