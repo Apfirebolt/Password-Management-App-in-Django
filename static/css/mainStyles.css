@@ -34,6 +34,13 @@ input[type="color"]:focus,
     margin: 0.5rem auto;
 }
 
+/* Smooth Focus Rings */
+.form-control:focus,
+.form-select:focus {
+  border-color: #198754;
+  box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.25);
+}
+
 .container {
     display: none;
 }
@@ -99,21 +106,22 @@ input[type="color"]:focus,
 }
 
 .real_password {
-    width: 50%;
-    height: 300px;
     position: fixed;
-    right: 0;
-    left: 0;
-    margin-right: auto;
-    margin-left: auto;
-    background-color: #1c7430;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 450px;
+    background-color: #198754;
     color: #FFF;
-    font-weight: 600;
-    font-size: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    z-index: 1050;
+    padding: 2rem;
     display: none;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    z-index: 1000;
 }
 
 a.list-group-item {

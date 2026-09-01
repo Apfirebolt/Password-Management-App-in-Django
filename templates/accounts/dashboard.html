@@ -1,54 +1,236 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-    Password Manager - Dashboard
-{% endblock %}
+{% block title %}Dashboard | Password Manager{% endblock %}
 
 {% block content %}
+<div class="container py-4">
+
+    <!-- Flash Messages -->
     {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
-        {% endfor %}
+        <div class="row justify-content-center mb-4">
+            <div class="col-12">
+                {% for message in messages %}
+                    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
     {% endif %}
-    <div class="container">
 
-        <h3 class="text-primary my-3 text-center">DASHBOARD</h3>
-        <div class="container d-lg-flex d-sm-block my-3">
-            {% if not request.user.profile_image %}
-            <p>
-                It seems you haven't uploaded your profile image, we suggest you to upload it now.
-            </p>
-            {% else %}
-                <img height="300" width="300" class="rounded m-2" src={{ request.user.profile_image.url }}>
-            {% endif %}
+    <!-- Dashboard Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center pb-3 mb-4 border-bottom">
+        <div>
+            <h2 class="text-success fw-bold mb-1">User Dashboard</h2>
+            <p class="text-muted small mb-0">Manage your profile, encryption keys, and vault entries</p>
+        </div>
+        <div class="mt-3 mt-md-0">
+            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill small">
+                &#128100; Signed in as <strong>{{ request.user.username }}</strong>
+            </span>
+        </div>
+    </div>
 
-            <div class="container_fluid text-center">
-                 <p class="header_para">
-                Hey <span class="lead m-1">{{ request.user.username }}</span>, This is your secret key
-                </p>
-                <p>
-                    <span class="highlight">{{ request.user.user_secret_key }}</span>
-                </p>
-                <p>
-                    This would be used to perform all
-                    your password and file encryption, please do not share this with others.
-                </p>
+    <div class="row g-4 mb-4">
+        
+        <!-- Profile & Account Settings Card -->
+        <div class="col-lg-4 col-md-5">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body p-4 text-center d-flex flex-column align-items-center">
+                    
+                    <!-- Avatar Display -->
+                    <div class="position-relative mb-3">
+                        {% if request.user.profile_image %}
+                            <img 
+                                src="{{ request.user.profile_image.url }}" 
+                                alt="{{ request.user.username }} profile photo" 
+                                class="rounded-circle object-fit-cover shadow-sm border border-2 border-success p-1"
+                                style="width: 140px; height: 140px;"
+                            />
+                        {% else %}
+                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center shadow-sm border border-2 border-secondary border-opacity-25" style="width: 140px; height: 140px;">
+                                <span class="fs-1 text-secondary">&#128100;</span>
+                            </div>
+                        {% endif %}
+                    </div>
 
-                <div class="container_fluid my-3">
-                    <p class="text-success my-3">You can update your account settings from here !</p>
-                    <a class="btn btn-primary" href={% url 'accounts:update_profile_image' %}>Update Profile Image</a>
-                    <a class="btn btn-primary" href={% url 'accounts:update_settings' %}>Update Username/Email</a>
-                    <a class="btn btn-primary" href={% url 'accounts:update_password' %}>Update Password</a>
+                    <h5 class="fw-bold text-dark mb-1">{{ request.user.username }}</h5>
+                    <p class="text-muted small mb-3">{{ request.user.email|default:"No email provided" }}</p>
+
+                    {% if not request.user.profile_image %}
+                        <div class="alert alert-warning py-2 px-3 small w-100 mb-3" role="alert">
+                            No avatar uploaded. Add one to personalize your vault.
+                        </div>
+                    {% endif %}
+
+                    <!-- Account Quick Actions -->
+                    <div class="d-grid gap-2 w-100 mt-auto">
+                        <a href="{% url 'accounts:update_profile_image' %}" class="btn btn-outline-secondary btn-sm py-2 text-start d-flex justify-content-between align-items-center">
+                            <span>&#128247; Update Avatar</span>
+                            <span>&rarr;</span>
+                        </a>
+                        <a href="{% url 'accounts:update_settings' %}" class="btn btn-outline-secondary btn-sm py-2 text-start d-flex justify-content-between align-items-center">
+                            <span>&#9881; Edit Username / Email</span>
+                            <span>&rarr;</span>
+                        </a>
+                        <a href="{% url 'accounts:update_password' %}" class="btn btn-outline-secondary btn-sm py-2 text-start d-flex justify-content-between align-items-center">
+                            <span>&#128273; Change Password</span>
+                            <span>&rarr;</span>
+                        </a>
+                    </div>
+
                 </div>
             </div>
         </div>
 
-        <ul class="list-group">
-            <a class="list-group-item" href={% url 'passwords:create_category' %}>Create Category</a>
-            <a class="list-group-item" href={% url 'passwords:create_password' %}>Create Password</a>
-            <a class="list-group-item" href={% url 'passwords:create_generated_password' %}>Generate Password</a>
-            <a class="list-group-item" href={% url 'passwords:upload_file' %}>Upload File</a>
-        </ul>
-    </div>
-{% endblock %}
+        <!-- Master Encryption Key & Security Banner -->
+        <div class="col-lg-8 col-md-7">
+            <div class="card shadow-sm border-0 rounded-3 h-100">
+                <div class="card-body p-4 p-md-5 d-flex flex-column justify-content-between">
+                    
+                    <div>
+                        <div class="d-flex align-items-center gap-2 mb-3">
+                            <span class="fs-4 text-warning">&#128737;</span>
+                            <h5 class="fw-bold text-dark mb-0">Master Secret Key</h5>
+                        </div>
 
+                        <p class="text-secondary small mb-3">
+                            This unique master secret key is used to derive AES encryption keys for all your passwords and vault files. Never disclose this string to anyone.
+                        </p>
+
+                        <!-- Key Container with Copy Functionality -->
+                        <div class="p-3 bg-dark rounded-3 border border-secondary border-opacity-25 mb-3">
+                            <label class="text-secondary small fw-semibold text-uppercase d-block mb-1">Your Encryption Key</label>
+                            <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
+                                <code id="secretKeyText" class="text-success fs-6 fw-bold user-select-all text-break">
+                                    {{ request.user.user_secret_key }}
+                                </code>
+                                <button type="button" class="btn btn-sm btn-outline-success text-nowrap" onclick="copySecretKey()">
+                                    <span id="copyBtnText">&#128203; Copy Key</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="alert alert-secondary bg-light border-0 small text-muted mb-0">
+                            <strong>Note:</strong> If you lose or reset this key without backing up your encrypted records, previously encrypted items cannot be recovered.
+                        </div>
+                    </div>
+
+                    <!-- Security Status Bar -->
+                    <div class="pt-4 mt-4 border-top">
+                        <div class="row text-center g-2">
+                            <div class="col-sm-4">
+                                <div class="p-2 rounded bg-light">
+                                    <div class="text-success fw-bold small">&#10003; 256-bit AES</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Encryption Status</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="p-2 rounded bg-light">
+                                    <div class="text-success fw-bold small">&#10003; Zero Plaintext</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Database Storage</div>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="p-2 rounded bg-light">
+                                    <div class="text-success fw-bold small">&#10003; Client Protected</div>
+                                    <div class="text-muted" style="font-size: 0.75rem;">Session Security</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Quick Action Cards (Vault Operations) -->
+    <h5 class="fw-bold text-dark mb-3">Vault Quick Actions</h5>
+    <div class="row g-3">
+        
+        <div class="col-lg-3 col-sm-6">
+            <a href="{% url 'passwords:create_password' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 rounded-3 h-100 hover-shadow transition-all bg-success bg-opacity-10 border border-success border-opacity-25 p-3">
+                    <div class="card-body p-0 d-flex align-items-center">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-3 me-3" style="width: 48px; height: 48px;">
+                            <span class="fs-4">&#43;</span>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-success mb-1">New Password</h6>
+                            <p class="text-muted small mb-0">Encrypt and save credentials</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <a href="{% url 'passwords:create_category' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 rounded-3 h-100 hover-shadow transition-all p-3">
+                    <div class="card-body p-0 d-flex align-items-center">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-light text-primary rounded-3 me-3" style="width: 48px; height: 48px;">
+                            <span class="fs-4">&#128193;</span>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1">New Category</h6>
+                            <p class="text-muted small mb-0">Organize credential groups</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <a href="{% url 'passwords:create_generated_password' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 rounded-3 h-100 hover-shadow transition-all p-3">
+                    <div class="card-body p-0 d-flex align-items-center">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-light text-warning rounded-3 me-3" style="width: 48px; height: 48px;">
+                            <span class="fs-4">&#9889;</span>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1">Generator</h6>
+                            <p class="text-muted small mb-0">Generate secure passwords</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-lg-3 col-sm-6">
+            <a href="{% url 'passwords:upload_file' %}" class="text-decoration-none">
+                <div class="card shadow-sm border-0 rounded-3 h-100 hover-shadow transition-all p-3">
+                    <div class="card-body p-0 d-flex align-items-center">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-light text-info rounded-3 me-3" style="width: 48px; height: 48px;">
+                            <span class="fs-4">&#128196;</span>
+                        </div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1">Upload File</h6>
+                            <p class="text-muted small mb-0">Encrypt and store documents</p>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+
+</div>
+
+<!-- Copy Key Script -->
+<script>
+function copySecretKey() {
+    const keyText = document.getElementById('secretKeyText').innerText.trim();
+    navigator.clipboard.writeText(keyText).then(() => {
+        const btnText = document.getElementById('copyBtnText');
+        btnText.innerHTML = '&#10003; Copied!';
+        setTimeout(() => {
+            btnText.innerHTML = '&#128203; Copy Key';
+        }, 2000);
+    });
+}
+</script>
+{% endblock %}

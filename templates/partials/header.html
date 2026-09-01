@@ -1,49 +1,98 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <p class="navbar-brand">Password Manager</p>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary border-opacity-25 shadow-sm py-2">
+  <div class="container">
+    
+    <!-- Brand Logo / Title -->
+    <a class="navbar-brand d-flex align-items-center fw-bold text-success fs-4" href="{% url 'home' %}">
+      <span class="me-2 fs-5">&#128274;</span>
+      <span class="text-white">Password</span><span class="text-success ms-1">Manager</span>
+    </a>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-    <ul class="navbar-nav mr-auto">
-      <li class="nav-item active">
+    <!-- Mobile Menu Toggle Button (Bootstrap 5 standard) -->
+    <button 
+      class="navbar-toggler border-0 shadow-none" 
+      type="button" 
+      data-bs-toggle="collapse" 
+      data-bs-target="#mainNavbar" 
+      aria-controls="mainNavbar" 
+      aria-expanded="false" 
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-        <a class="nav-link" href={% url 'home' %}>Home</a>
-      </li>
-      {% if request.user.is_authenticated %}
-          <p class="text-success m-2">
-            Hello, {{ request.user.username }}
-          </p>
+    <!-- Collapsible Navigation -->
+    <div class="collapse navbar-collapse" id="mainNavbar">
+      
+      <!-- Left Side Links -->
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-lg-center">
+        <li class="nav-item">
+          <a class="nav-link px-3 {% if request.resolver_match.url_name == 'home' %}active fw-semibold text-success{% endif %}" href="{% url 'home' %}">
+            Home
+          </a>
+        </li>
+
+        {% if request.user.is_authenticated %}
           <li class="nav-item">
-            <a class="nav-link" href={% url 'accounts:home' %}>Dashboard</a>
-          </li>
-
-          <li class="nav-item">
-            <a class="nav-link" href={% url 'accounts:logout' %}>Log out</a>
-          </li>
-
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Manage Passwords
+            <a class="nav-link px-3 {% if request.resolver_match.url_name == 'accounts:home' %}active fw-semibold text-success{% endif %}" href="{% url 'accounts:home' %}">
+              Dashboard
             </a>
-            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-              <a class="dropdown-item" href={% url 'passwords:create_category' %}>Create Category</a>
-              <a class="dropdown-item" href={% url 'passwords:create_password' %}>Create Password</a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href={% url 'passwords:home' %}>View All Passwords</a>
-                <a class="dropdown-item" href={% url 'passwords:generated_passwords' %}>Generated Passwords</a>
-                <a class="dropdown-item" href={% url 'passwords:file_list' %}>File Management</a>
-            </div>
           </li>
 
-          {% else %}
-          <li class="nav-item">
-            <a class="nav-link" href={% url 'accounts:register' %}>Register</a>
+          <!-- Manage Passwords Dropdown -->
+          <li class="nav-item dropdown">
+            <a 
+              class="nav-link dropdown-toggle px-3 text-light" 
+              href="#" 
+              id="passwordDropdown" 
+              role="button" 
+              data-bs-toggle="dropdown" 
+              aria-expanded="false"
+            >
+              Vault Actions
+            </a>
+            <ul class="dropdown-menu dropdown-menu-dark shadow border-secondary border-opacity-25" aria-labelledby="passwordDropdown">
+              <li><h6 class="dropdown-header text-uppercase text-secondary small fw-bold">Create</h6></li>
+              <li><a class="dropdown-item py-2" href="{% url 'passwords:create_password' %}">&#43; New Password</a></li>
+              <li><a class="dropdown-item py-2" href="{% url 'passwords:create_category' %}">&#128193; New Category</a></li>
+              <li><hr class="dropdown-divider border-secondary opacity-50"></li>
+              <li><h6 class="dropdown-header text-uppercase text-secondary small fw-bold">Manage & Storage</h6></li>
+              <li><a class="dropdown-item py-2" href="{% url 'passwords:home' %}">&#128273; All Saved Passwords</a></li>
+              <li><a class="dropdown-item py-2" href="{% url 'passwords:generated_passwords' %}">&#9889; Generated Passwords</a></li>
+              <li><a class="dropdown-item py-2" href="{% url 'passwords:file_list' %}">&#128196; File Management</a></li>
+            </ul>
+          </li>
+        {% endif %}
+      </ul>
+
+      <!-- Right Side Actions (User Session & Auth) -->
+      <ul class="navbar-nav ms-auto align-items-lg-center gap-2">
+        {% if request.user.is_authenticated %}
+          <!-- User Profile Badge & Logout -->
+          <li class="nav-item d-flex align-items-center me-lg-2">
+            <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 py-2 px-3 rounded-pill small">
+              <span class="me-1">&#128100;</span> {{ request.user.username }}
+            </span>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href={% url 'accounts:login' %}>Login</a>
+            <a class="btn btn-outline-danger btn-sm px-3 py-1 rounded-pill" href="{% url 'accounts:logout' %}">
+              Log Out
+            </a>
           </li>
-      {% endif %}
-    </ul>
+        {% else %}
+          <!-- Guest Links -->
+          <li class="nav-item">
+            <a class="nav-link px-3 text-light" href="{% url 'accounts:login' %}">
+              Log In
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="btn btn-success btn-sm px-3 py-1 fw-semibold rounded-pill shadow-sm" href="{% url 'accounts:register' %}">
+              Get Started
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+
+    </div>
   </div>
 </nav>

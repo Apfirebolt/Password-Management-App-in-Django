@@ -1,35 +1,96 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
-{% block title %}
-    Password Manager - Create Category
-{% endblock %}
+{% block title %}Create Category | Password Manager{% endblock %}
 
 {% block content %}
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}" role="alert">{{ message }}</div>
-        {% endfor %}
-    {% endif %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8">
 
-    <form method="post" action="" class="container">
-        <h2 class="text-success my-3 text-center">CREATE PASSWORD CATEGORY</h2>
-        {% csrf_token %}
-        {% for each_field in form %}
-            <div class="form-group">
-                <label for={{ each_field.name }}>{{ each_field.label }}</label>
-                {{ each_field }}
+            <!-- Flash Messages -->
+            {% if messages %}
+                <div class="mb-4">
+                    {% for message in messages %}
+                        <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %} alert-dismissible fade show shadow-sm" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="card shadow-sm border-0 rounded-3">
+                <div class="card-body p-4 p-md-5">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-circle mb-3" style="width: 56px; height: 56px;">
+                            <span class="fs-4">&#128193;</span>
+                        </div>
+                        <h2 class="text-success fw-bold">Create Category</h2>
+                        <p class="text-muted small">Organize your passwords into custom groups (e.g., Work, Social, Banking)</p>
+                    </div>
+
+                    <!-- Non-field / Form-level Errors -->
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+                            <h6 class="alert-heading fw-bold mb-1">Please fix the following:</h6>
+                            <ul class="mb-0 ps-3 small">
+                                {% for error in form.non_field_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                            </ul>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
+
+                    <form method="post" novalidate>
+                        {% csrf_token %}
+
+                        {% for field in form %}
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label fw-semibold small text-secondary">
+                                    {{ field.label }}
+                                </label>
+
+                                {% if field.errors %}
+                                    {{ field|add_class:"form-control is-invalid" }}
+                                    <div class="invalid-feedback d-block">
+                                        {% for error in field.errors %}
+                                            {{ error }}
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    {{ field|add_class:"form-control" }}
+                                {% endif %}
+
+                                {% if field.help_text %}
+                                    <div class="form-text text-muted small">{{ field.help_text }}</div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+
+                        <!-- Actions -->
+                        <div class="d-flex flex-column flex-sm-row justify-content-end gap-2 mt-4">
+                            <a href="{% url 'accounts:home' %}" class="btn btn-outline-secondary px-4 py-2 small fw-semibold">
+                                Cancel
+                            </a>
+                            <button type="submit" class="btn btn-success px-4 py-2 small fw-semibold shadow-sm">
+                                Create Category
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
             </div>
-       {% endfor %}
 
-        {% if form.errors %}
-        <h3 class="text-danger my-3 text-center">You have errors in form, please correct them and try again!</h3>
-          <ul>
-            {% for key,value in form.errors.items %}
-              <li class="alert alert-danger" role="alert">{{ value|escape }}</li>
-            {% endfor %}
-          </ul>
-        {% endif %}
-        <input type="submit" class="btn btn-success rounded shadow-sm mx-auto" value="Submit">
-    </form>
+            <!-- Helpful Tip Card -->
+            <div class="mt-4 p-3 bg-light rounded-3 border text-center small text-muted">
+                &#128161; <strong>Tip:</strong> Grouping passwords by category allows you to apply bulk encryption and filtering rules across entries.
+            </div>
 
+        </div>
+    </div>
+</div>
 {% endblock %}
