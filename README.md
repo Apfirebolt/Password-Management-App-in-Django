@@ -30,6 +30,23 @@ file. The file would be stored in encrypted form. Work on file decryption is sti
 * [MySQL](https://www.mysql.com/)
 * [HTML + CSS](https://www.w3schools.com/html/html_css.asp)
 
+## Deployment using Supervisor
+
+`sudo nano /etc/supervisor/conf.d/password_manager.conf`
+
+Paste the contents in the config file
+
+`
+[program:password_manager]
+command=/home/Password-Management-App-in-Django/venv/bin/gunicorn password_manager.wsgi:application --bind 127.0.0.1:8001 --workers 3
+directory=/home/Password-Management-App-in-Django
+autostart=true
+autorestart=true
+stderr_logfile=/home/Password-Management-App-in-Django/logs/password_manager.err.log
+stdout_logfile=/home/Password-Management-App-in-Django/logs/password_manager.out.log
+environment=PATH="/home/Password-Management-App-in-Django/venv/bin",DB_NAME="your_db_name",DB_USER="doadmin",DB_PASSWORD="your_password",DB_HOST="your_host",DB_PORT="5432"
+`
+
 ## Authors
 
 * **Amit Prafulla (APFirebolt)** - (http://amitprafull.com/)
