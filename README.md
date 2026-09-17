@@ -38,13 +38,13 @@ Paste the contents in the config file
 
 `
 [program:password_manager]
-command=/home/Password-Management-App-in-Django/venv/bin/gunicorn password_manager.wsgi:application --bind 127.0.0.1:8001 --workers 3
+command=/home/Password-Management-App-in-Django/venv/bin/gunicorn password_manager.wsgi:application --bind 127.0.0.1:8000 --workers 3
 directory=/home/Password-Management-App-in-Django
 autostart=true
 autorestart=true
 stderr_logfile=/home/Password-Management-App-in-Django/logs/password_manager.err.log
 stdout_logfile=/home/Password-Management-App-in-Django/logs/password_manager.out.log
-environment=PATH="/home/Password-Management-App-in-Django/venv/bin",DB_NAME="your_db_name",DB_USER="doadmin",DB_PASSWORD="your_password",DB_HOST="your_host",DB_PORT="5432"
+environment=PATH="/home/Password-Management-App-in-Django/venv/bin"
 `
 
 ## Authors
